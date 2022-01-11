@@ -1,35 +1,36 @@
-﻿using Core.RabbitMQ.Library.Common.ConfigsModels.Base;
-using Microsoft.Extensions.Options;
+﻿using Core.RabbitMQ.Library.Common.ConfigsModels;
+using Core.RabbitMQ.Library.Common.ConfigsModels.Base;
 using RabbitMQ.Client;
 
 namespace Core.RabbitMQ.Library.Context
 {
     public class RabbitMqContext : IRabbitMqContext
     {
-        private readonly SubscriberConfiguration _subscriberConfiguration;
-        private readonly PublisherConfiguration _publisherConfiguration;
+        private readonly RabbitMqConfiguration _rabbitMqConfiguration;
 
-        public IConnection PublisherConnection { get; }
         public IConnection SubscriberConnection { get; }
 
-        public RabbitMqContext(IOptions<SubscriberConfiguration> subscriberConfiguration, 
-            IOptions<PublisherConfiguration> publisherConfiguration)
+        public RabbitMqContext(RabbitMqConfiguration rabbitMqConfiguration)
         {
-            _subscriberConfiguration = subscriberConfiguration.Value;
-            _publisherConfiguration = publisherConfiguration.Value;
+            _rabbitMqConfiguration = rabbitMqConfiguration;
 
-            PublisherConnection = CreateNewRabbitConnection(_publisherConfiguration.UserName, _publisherConfiguration.Password, _publisherConfiguration.Port, _publisherConfiguration.VirtualHost, _publisherConfiguration.Hostname);
-            SubscriberConnection = CreateNewRabbitConnection(_subscriberConfiguration.UserName, _subscriberConfiguration.Password, _subscriberConfiguration.Port, _subscriberConfiguration.VirtualHost, _subscriberConfiguration.Hostname);
+            SubscriberConnection = CreateNewRabbitConnection(_rabbitMqConfiguration.UserName,
+                _rabbitMqConfiguration.Password,
+                _rabbitMqConfiguration.Port,
+                _rabbitMqConfiguration.Hostname);
         }
 
-        public IConnection CreateNewRabbitConnection(string userName, string password, int port, string virtualHost, string hostName)
+        public IConnection CreateNewRabbitConnection(
+            string userName, 
+            string password, 
+            int port, 
+            string hostName)
         {
             var factory = new ConnectionFactory()
             {
                 UserName = userName,
                 Password = password,
                 Port = port,
-                VirtualHost = virtualHost,
                 HostName = hostName
             };
 

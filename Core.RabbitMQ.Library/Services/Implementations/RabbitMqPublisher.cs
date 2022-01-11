@@ -18,7 +18,7 @@ namespace Core.RabbitMQ.Library.Services.Implementations
         public RabbitMqPublisher(IRabbitMqContext context,
             IOptions<PublisherConfiguration> configuration)
         {
-            _connection = context.PublisherConnection;
+            _connection = context.SubscriberConnection;
             _channel = _connection.CreateModel();
             _queueName = configuration.Value.QueueName;
             _exchangeName = configuration.Value.ExchangeName;
