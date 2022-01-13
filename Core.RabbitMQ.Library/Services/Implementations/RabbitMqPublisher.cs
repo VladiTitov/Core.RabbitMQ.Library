@@ -1,46 +1,23 @@
-﻿using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System.Text;
+using System.Threading.Tasks;
 using Core.RabbitMQ.Library.Context;
 using Core.RabbitMQ.Library.Services.Interfaces;
-using Core.RabbitMQ.Library.Common.ConfigsModels.Base;
+using Core.RabbitMQ.Library.Common.ConfigsModels.Interfaces;
 
 namespace Core.RabbitMQ.Library.Services.Implementations
 {
-    public class RabbitMqPublisher : IRabbitMqPublisher
+    public class RabbitMqPublisher : RabbitMqInitializer, IRabbitMqPublisher
     {
-        private readonly IConnection _connection;
-        private readonly IModel _channel;
-        private readonly string _queueName;
-        private readonly string _exchangeName;
-        private readonly string _routingKey;
+        public RabbitMqPublisher(IRabbitMqContext context, IRabbitMqConfiguration configuration) : base(context, configuration) { }
 
-        public RabbitMqPublisher(IRabbitMqContext context,
-            IOptions<PublisherConfiguration> configuration)
+        public Task SendMessage(string message)
         {
-            _connection = context.SubscriberConnection;
-            _channel = _connection.CreateModel();
-            _queueName = configuration.Value.QueueName;
-            _exchangeName = configuration.Value.ExchangeName;
-            _routingKey = configuration.Value.RoutingKey;
-        }
-
-        public void ChannelConsume(string message)
-        {
-            _channel.QueueDeclare(queue: _queueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueBind(queue: _queueName, exchange: _exchangeName, routingKey: _routingKey);
-
             var body = Encoding.UTF8.GetBytes(message);
+            Channel.BasicPublish(exchange: ExchangeName, routingKey: RoutingKey, basicProperties: null, body: body);
 
-            _channel.BasicPublish(exchange: _exchangeName,
-                routingKey: _routingKey,
-                basicProperties: null,
-                body: body);
+            return Task.CompletedTask;
         }
+
     }
 }

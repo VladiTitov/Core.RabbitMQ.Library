@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Core.RabbitMQ.Library\Core.RabbitMQ.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configs\" />
+  </ItemGroup>
+
 </Project>

@@ -1,29 +1,26 @@
 ﻿using Core.RabbitMQ.Library.Common.ConfigsModels;
-using Core.RabbitMQ.Library.Common.ConfigsModels.Base;
 using RabbitMQ.Client;
 
 namespace Core.RabbitMQ.Library.Context
 {
     public class RabbitMqContext : IRabbitMqContext
     {
-        private readonly RabbitMqConfiguration _rabbitMqConfiguration;
+        public IConnection Connection { get; }
 
-        public IConnection SubscriberConnection { get; }
-
-        public RabbitMqContext(RabbitMqConfiguration rabbitMqConfiguration)
+        public RabbitMqContext(ConnectionConfiguration rabbitMqConfiguration)
         {
-            _rabbitMqConfiguration = rabbitMqConfiguration;
-
-            SubscriberConnection = CreateNewRabbitConnection(_rabbitMqConfiguration.UserName,
-                _rabbitMqConfiguration.Password,
-                _rabbitMqConfiguration.Port,
-                _rabbitMqConfiguration.Hostname);
+            Connection = CreateNewRabbitConnection(rabbitMqConfiguration.UserName,
+                rabbitMqConfiguration.Password,
+                rabbitMqConfiguration.Port,
+                rabbitMqConfiguration.VirtualHost,
+                rabbitMqConfiguration.Hostname);
         }
 
         public IConnection CreateNewRabbitConnection(
             string userName, 
             string password, 
-            int port, 
+            int port,
+            string virtualHost,
             string hostName)
         {
             var factory = new ConnectionFactory()
@@ -31,6 +28,7 @@ namespace Core.RabbitMQ.Library.Context
                 UserName = userName,
                 Password = password,
                 Port = port,
+                VirtualHost = virtualHost,
                 HostName = hostName
             };
 

@@ -1,7 +1,9 @@
-﻿namespace Core.RabbitMQ.Library.Services.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace Core.RabbitMQ.Library.Services.Interfaces
 {
     public interface IRabbitMqPublisher
     {
-        void ChannelConsume(string message);
+        Task SendMessage(string message);
     }
 }

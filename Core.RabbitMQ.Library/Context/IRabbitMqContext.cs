@@ -4,8 +4,8 @@ namespace Core.RabbitMQ.Library.Context
 {
     public interface IRabbitMqContext
     {
-        IConnection SubscriberConnection { get; }
+        IConnection Connection { get; }
 
-        IConnection CreateNewRabbitConnection(string userName, string password, int port, string hostName);
+        IConnection CreateNewRabbitConnection(string userName, string password, int port, string virtualHost, string hostName);
     }
 }

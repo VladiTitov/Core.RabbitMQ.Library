@@ -1,6 +1,12 @@
-﻿namespace Core.RabbitMQ.Library.Common.ConfigsModels.Base
+﻿using Core.RabbitMQ.Library.Common.ConfigsModels.Interfaces;
+
+namespace Core.RabbitMQ.Library.Common.ConfigsModels.Base
 {
-    public class PublisherConfiguration : RabbitMqConfiguration
+    public class PublisherConfiguration : IRabbitMqConfiguration
     {
+        public string ExchangeType { get; set; }
+        public string ExchangeName { get; set; }
+        public string QueueName { get; set; }
+        public string RoutingKey { get; set; }
     }
 }
